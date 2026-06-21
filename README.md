@@ -1,5 +1,10 @@
 # bunpro-mcp
 
+[![CI](https://github.com/PatVandyke/bunpro-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/PatVandyke/bunpro-mcp/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@patvandyke/bunpro-mcp.svg)](https://www.npmjs.com/package/@patvandyke/bunpro-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Node](https://img.shields.io/node/v/@patvandyke/bunpro-mcp.svg)
+
 An unofficial [Model Context Protocol](https://modelcontextprotocol.io) server for
 [Bunpro](https://bunpro.jp), the Japanese grammar/vocabulary SRS. It exposes Bunpro's
 review queue, search, statistics, and SRS management as MCP tools, so an LLM agent can
@@ -50,7 +55,22 @@ npm run build
 
 ## Configure your MCP client
 
-Add the server to your MCP client config (stdio transport):
+Add the server to your MCP client config (stdio transport). Either run it via `npx` (no
+local clone needed):
+
+```json
+{
+  "mcpServers": {
+    "bunpro": {
+      "command": "npx",
+      "args": ["-y", "@patvandyke/bunpro-mcp"],
+      "env": { "BUNPRO_API_TOKEN": "your_frontend_api_token_here" }
+    }
+  }
+}
+```
+
+…or point at a local build (see `claude_desktop_config.example.json`):
 
 ```json
 {
@@ -68,17 +88,16 @@ Add the server to your MCP client config (stdio transport):
 
 ## Token refresh without restarting
 
-The token is resolved **per request**, not just at startup:
+The token is resolved **per request**, not just at startup, so a refreshed token is picked up
+without restarting the server:
 
-1. If `~/.claude-work/.claude.json` exists, the live `BUNPRO_API_TOKEN` value is read from it on
-   each call (30 s cache) and re-read on a `401`. Under Claude Code this means you can refresh the
-   token in that file and the **next call picks it up — no restart**.
+1. **`BUNPRO_TOKEN_FILE`** — if set (or, by default, `~/.claude-work/.claude.json` when present),
+   the live `BUNPRO_API_TOKEN` value is read from that JSON file on each call (30 s cache) and
+   re-read on a `401`. Refresh the token in the file and the **next call picks it up — no restart**.
+   This is handy under Claude Code, whose config already holds the token.
 2. Otherwise it falls back to the `BUNPRO_API_TOKEN` env var supplied at spawn.
 
 A `401` returns a clear "token expired" message instead of dropping the connection.
-
-> Note: the auto-refresh file path is currently hardcoded to the Claude Code config location;
-> for other clients the env var is used. A configurable token-file path is a planned improvement.
 
 ## Tools
 

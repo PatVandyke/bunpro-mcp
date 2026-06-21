@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -12,12 +13,14 @@ const legacyKey = process.env.BUNPRO_API_KEY;
 if (!frontendToken && !legacyKey && !readTokenFromFile()) {
   console.error(
     "Error: Set at least one of:\n" +
-      "  BUNPRO_API_TOKEN  — frontend JWT token (full access)\n" +
+      "  BUNPRO_API_TOKEN  — frontend API token (full access)\n" +
       "  BUNPRO_API_KEY    — legacy API key (study_queue + recent_items only)\n\n" +
       "To get BUNPRO_API_TOKEN:\n" +
       "  1. Log in to bunpro.jp\n" +
       "  2. Open DevTools → Application → Cookies → bunpro.jp\n" +
-      "  3. Copy the value of 'frontend_api_token'"
+      "  3. Copy the value of 'frontend_api_token'\n\n" +
+      "Optional: BUNPRO_TOKEN_FILE — path to a JSON file containing a\n" +
+      "  BUNPRO_API_TOKEN field, re-read per call so you can refresh without a restart."
   );
   process.exit(1);
 }

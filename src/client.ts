@@ -22,10 +22,20 @@ import { join } from "node:path";
 
 const FRONTEND_BASE = "https://api.bunpro.jp/api/frontend";
 const LEGACY_BASE = "https://bunpro.jp/api/user";
-const TOKEN_FILE = join(homedir(), ".claude-work", ".claude.json");
+const DEFAULT_TOKEN_FILE = join(homedir(), ".claude-work", ".claude.json");
 const TOKEN_TTL_MS = 30_000;
 
-function deepFindToken(obj: unknown): string | undefined {
+/**
+ * Path of the JSON file the live token is read from. Override with the
+ * `BUNPRO_TOKEN_FILE` env var; defaults to the Claude Code config location.
+ * Evaluated per call so other clients (and tests) can point it elsewhere — if
+ * the file is absent, token resolution simply falls back to the env var.
+ */
+function tokenFilePath(): string {
+  return process.env.BUNPRO_TOKEN_FILE || DEFAULT_TOKEN_FILE;
+}
+
+export function deepFindToken(obj: unknown): string | undefined {
   if (obj && typeof obj === "object") {
     for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
       if (k === "BUNPRO_API_TOKEN" && typeof v === "string" && v.length > 0) {
@@ -44,7 +54,7 @@ function deepFindToken(obj: unknown): string | undefined {
  */
 export function readTokenFromFile(): string | undefined {
   try {
-    return deepFindToken(JSON.parse(readFileSync(TOKEN_FILE, "utf8")));
+    return deepFindToken(JSON.parse(readFileSync(tokenFilePath(), "utf8")));
   } catch {
     return undefined;
   }
@@ -81,7 +91,7 @@ function compactAttrs(a: Record<string, unknown> | undefined) {
  * and HTML structure blocks — a single query (e.g. べき) can exceed 240 KB and
  * kill the stdio transport. Truncation is reported, never silent.
  */
-function trimSearch(raw: any, limit: number) {
+export function trimSearch(raw: any, limit: number) {
   const pick = (section: any) =>
     (section?.data ?? []).slice(0, limit).map((d: any) => compactAttrs(d?.attributes));
   const gTotal = raw?.grammar_points?.data?.length ?? 0;

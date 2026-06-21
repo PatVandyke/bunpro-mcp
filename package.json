@@ -1,20 +1,50 @@
 {
-  "name": "bunpro-mcp",
+  "name": "@patvandyke/bunpro-mcp",
   "version": "1.0.0",
-  "description": "MCP server for Bunpro Japanese grammar/vocab SRS",
+  "description": "MCP server for Bunpro — the Japanese grammar/vocabulary SRS. Exposes reviews, search, stats, and SRS management as MCP tools.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "bunpro-mcp": "dist/index.js"
   },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
+    "prepare": "tsc"
   },
-  "keywords": [],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "bunpro",
+    "japanese",
+    "srs",
+    "grammar",
+    "vocabulary",
+    "language-learning",
+    "claude"
+  ],
   "author": "Patrik Kollár",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PatVandyke/bunpro-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PatVandyke/bunpro-mcp/issues"
+  },
+  "homepage": "https://github.com/PatVandyke/bunpro-mcp#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.28.0",
     "zod": "^4.3.6"
