@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "bunpro": {
+      "command": "node",
+      "args": ["/absolute/path/to/bunpro-mcp/dist/index.js"],
+      "env": {
+        "BUNPRO_API_TOKEN": "your_frontend_api_token_here"
+      }
+    }
+  }
+}
