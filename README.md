@@ -1,9 +1,8 @@
 # bunpro-mcp
 
 [![CI](https://github.com/PatVandyke/bunpro-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/PatVandyke/bunpro-mcp/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@patvandyke/bunpro-mcp.svg)](https://www.npmjs.com/package/@patvandyke/bunpro-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Node](https://img.shields.io/node/v/@patvandyke/bunpro-mcp.svg)
+![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)
 
 An unofficial [Model Context Protocol](https://modelcontextprotocol.io) server for
 [Bunpro](https://bunpro.jp), the Japanese grammar/vocabulary SRS. It exposes Bunpro's
@@ -55,22 +54,9 @@ npm run build
 
 ## Configure your MCP client
 
-Add the server to your MCP client config (stdio transport). Either run it via `npx` (no
-local clone needed):
-
-```json
-{
-  "mcpServers": {
-    "bunpro": {
-      "command": "npx",
-      "args": ["-y", "@patvandyke/bunpro-mcp"],
-      "env": { "BUNPRO_API_TOKEN": "your_frontend_api_token_here" }
-    }
-  }
-}
-```
-
-…or point at a local build (see `claude_desktop_config.example.json`):
+Add the server to your MCP client config (stdio transport). Build it locally first
+(`npm install` builds via the `prepare` script), then point at `dist/index.js` — see
+`claude_desktop_config.example.json`:
 
 ```json
 {
@@ -83,6 +69,9 @@ local clone needed):
   }
 }
 ```
+
+> Not yet published to npm. Once it is, you'll also be able to run it with no local clone via
+> `"command": "npx", "args": ["-y", "@patvandyke/bunpro-mcp"]`.
 
 `BUNPRO_API_KEY` (legacy) is optional and only enables the two `*_legacy` tools.
 
